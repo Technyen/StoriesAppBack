@@ -14,14 +14,23 @@ namespace Api
             var builder = WebApplication.CreateBuilder(args);
             //CORS configuration
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            string frontEndUrl;
+            if (builder.Environment.IsDevelopment())
+            {
+                frontEndUrl = "http://localhost:3000";
+            }
+            else
+            {
+                frontEndUrl = "https://storiesapp202307.netlify.app";
+            }
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://localhost:3000")
+                                      policy.WithOrigins(frontEndUrl)
                                       .AllowAnyHeader();
-
                                   });
             });
 
@@ -41,7 +50,6 @@ namespace Api
                             PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
                         }
                     });
-
             });
 
             //AutomappDI
@@ -56,12 +64,9 @@ namespace Api
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            //}
+            app.UseSwagger();
+
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 
