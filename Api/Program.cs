@@ -1,9 +1,6 @@
 using Api.Services;
-using Microsoft.Net.Http.Headers;
-using Microsoft.Azure.Cosmos;
 using Azure.Identity;
-using AutoMapper;
-using Newtonsoft.Json;
+using Microsoft.Azure.Cosmos;
 
 namespace Api
 {
