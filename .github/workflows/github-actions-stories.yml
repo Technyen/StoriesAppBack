@@ -9,7 +9,7 @@ permissions:
 env:
   AZURE_WEBAPP_NAME: testingelias23
   AZURE_WEBAPP_PACKAGE_PATH: './StoriesAppBack' 
-  DOTNET_VERSION: '7'           # set this to the dot net version to use
+  DOTNET_VERSION: '7.0'   
 
 jobs:
   build:
