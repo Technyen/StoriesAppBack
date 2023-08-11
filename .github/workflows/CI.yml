@@ -1,15 +1,8 @@
-name: .NET Core
-
 on:
   push:
     branches:
       - '*'
       - '!master'
-
-permissions:
-      id-token: write
-      contents: read
-
 env:
   DOTNET_VERSION: '7.0'   
 
@@ -20,7 +13,6 @@ jobs:
     steps:
       # Checkout the repo
       - uses: actions/checkout@main
-      
       
       # Setup .NET Core SDK
       - name: Setup .NET Core
