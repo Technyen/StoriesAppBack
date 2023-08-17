@@ -5,20 +5,20 @@ namespace Api.Services
 {
     public class StoryService
     {
-        private readonly ICosmosService _serviceCosmos;
+        private readonly ICosmosService _cosmosService;
 
-        public StoryService(ICosmosService serviceCosmos)
+        public StoryService(ICosmosService cosmosService)
         {
-            _serviceCosmos = serviceCosmos;
+            _cosmosService = cosmosService;
         }
 
         public async Task<CreateResult> CreateStory(Story story)
         {
-            var storyFound = await _serviceCosmos.FindItemAsync<Story>(story.Title, nameof(Story.Title));
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
             if (storyFound == null)
             {
                 story.Id = Guid.NewGuid().ToString();
-                await _serviceCosmos.CreateItemAsync(story);
+                await _cosmosService.CreateItemAsync(story);
                 return CreateResult.Success;
             }
             else
@@ -29,8 +29,26 @@ namespace Api.Services
 
         public async Task<List<Story>> GetStories()
         {
-            var stories = await _serviceCosmos.GetItemsAsync<Story>();
+            var stories = await _cosmosService.GetItemsAsync<Story>();
             return stories;
+        }
+
+        public async Task<EditResult> EditStory(Story story)
+        {
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
+            if(storyFound != null)
+            {
+                storyFound.Title = story.Title;
+                storyFound.Category = story.Category;
+                storyFound.AgeSuggested = story.AgeSuggested; 
+                storyFound.Description = story.Description;
+                await _cosmosService.UpdateItemAsync(storyFound, storyFound.Id);
+                return EditResult.Success;
+            }
+            else
+            {
+                return EditResult.NotFound;
+            }
         }
     }
 }

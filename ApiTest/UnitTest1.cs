@@ -22,7 +22,6 @@ namespace ApiTest
 
             // Assert
             Assert.Equal(stories, result);
-            //_cosmosServiceMock.Verify(x => x.GetItemsAsync<Story>(It.IsAny<Story>()),Times.Once());
         }
 
         [Fact]

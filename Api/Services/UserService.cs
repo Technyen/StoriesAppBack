@@ -14,7 +14,7 @@ namespace Api.Services
 
         public async Task<RegisterResult> RegisterUser(User user)
         {
-            var userFound = await _serviceCosmos.FindItemAsync<User>(user.Email, nameof(User.Email));
+            var userFound = await _serviceCosmos.FindItemAsync<User>(nameof(User.Email), user.Email);
             if (userFound == null)
             {
                 user.Id = Guid.NewGuid().ToString();
@@ -29,7 +29,7 @@ namespace Api.Services
 
         public async Task<LoginResult> LoginUser(User user)
         {
-            var userFound = await _serviceCosmos.FindItemAsync<User>(user.Email, nameof(User.Email));
+            var userFound = await _serviceCosmos.FindItemAsync<User>(nameof(User.Email), user.Email);
             if (userFound ==null)
             {
                 return LoginResult.NotFound;

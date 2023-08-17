@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using Api.Entities;
+﻿using Api.Entities;
 using Microsoft.Azure.Cosmos;
 using User = Api.Entities.User;
 
@@ -20,16 +19,22 @@ namespace Api.Services
             _containerNames.Add(nameof(Story), "stories");
         }
 
-        public async Task<T> CreateItemAsync<T>(T user)
+        public async Task<T> CreateItemAsync<T>(T item)
         {
             var container = _database.GetContainer(_containerNames[typeof(T).Name]);
-            return await container.CreateItemAsync<T>(user);
+            return await container.CreateItemAsync(item);
         }
 
-        public async Task<T> FindItemAsync<T>(string value, string property)
+        public async Task<T> UpdateItemAsync<T>(T item, string id)
         {
             var container = _database.GetContainer(_containerNames[typeof(T).Name]);
-            var queryString = $"SELECT * FROM {_containerNames[typeof(T).Name]} p WHERE p.{property} = '{value}'".ToLower();
+            return await container.ReplaceItemAsync(item, id);
+        }
+
+        public async Task<T?> FindItemAsync<T>(string propertyName, string value)
+        {
+            var container = _database.GetContainer(_containerNames[typeof(T).Name]);
+            var queryString = $"SELECT * FROM {_containerNames[typeof(T).Name]} p WHERE p.{propertyName} = '{value}'".ToLower();
             using var filteredFeed = container.GetItemQueryIterator<T>(queryDefinition: new QueryDefinition(query: queryString));
             var items = await filteredFeed.ReadNextAsync();
             return items.FirstOrDefault();

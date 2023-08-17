@@ -9,6 +9,7 @@ namespace Api.Profiles
         public StoryProfile() 
         {
             CreateMap<CreateStoryModel, Story>();
+            CreateMap<EditStoryModel, Story>();
         }
     }
 }
