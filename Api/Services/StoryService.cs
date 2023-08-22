@@ -33,6 +33,13 @@ namespace Api.Services
             return stories;
         }
 
+        public async Task<Story?> GetStory(string storyTitle)
+        {
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), storyTitle);
+            return storyFound;
+        }
+
+
         public async Task<EditResult> EditStory(Story story)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);

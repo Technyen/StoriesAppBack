@@ -4,8 +4,8 @@ namespace Api.Exceptions
 {
     public class NotFoundException : Exception
     {
-        public string Email { get; }
-        public string Password { get; }
+        public string? Email { get; }
+        public string? Password { get; }
         public NotFoundException()
         {
 

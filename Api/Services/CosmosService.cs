@@ -25,7 +25,7 @@ namespace Api.Services
             return await container.CreateItemAsync(item);
         }
 
-        public async Task<T> UpdateItemAsync<T>(T item, string id)
+        public async Task<T?> UpdateItemAsync<T>(T item, string id)
         {
             var container = _database.GetContainer(_containerNames[typeof(T).Name]);
             return await container.ReplaceItemAsync(item, id);

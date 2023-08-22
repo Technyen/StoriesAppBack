@@ -56,6 +56,21 @@ namespace Api.Controllers
             }
         }
 
+        [HttpGet("{byTitle}")]
+        public async Task<ActionResult<Story>> GetStory(string byTitle )
+        {
+            try
+            {
+                var result = await _storyService.GetStory(byTitle);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+
         [HttpPut("EditStory")]
         public async Task<ActionResult> EditStory(EditStoryModel editStoryModel)
         {
