@@ -27,7 +27,7 @@ namespace Api.Controllers
 
 
 
-        [HttpPost("Create")]
+        [HttpPost("create")]
         public async Task<ActionResult> CreateAsync(CreateStoryModel createStoryModel)
         {
             
@@ -43,7 +43,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("getAll")]
         public async Task<ActionResult<List<Story>>> GetStories()
         {
             try
@@ -57,12 +57,12 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("{Title}")]
-        public async Task<ActionResult<Story>> GetStoryAsync(string title)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Story>> GetStoryAsync(string id)
         {
             try
             {
-                var result = await _storyService.GetStoryAsync(title);
+                var result = await _storyService.GetStoryAsync(id);
                 return result;
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ namespace Api.Controllers
         }
 
 
-        [HttpPut("EditStory")]
+        [HttpPut("editStory")]
         public async Task<ActionResult> EditStoryAsync(EditStoryModel editStoryModel)
         {
             var story = _mapper.Map<Story>(editStoryModel);
@@ -87,7 +87,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpDelete("{StoryId}")]
+        [HttpDelete("{storyId}")]
         public async Task<ActionResult> DeleteStoryAsync(string storyId)
         {
             try

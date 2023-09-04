@@ -16,7 +16,7 @@ namespace Api.Services
 
         public async Task<CreateResult> CreateStoryAsync(Story story)
         {
-            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
             if (storyFound == null)
             {
                 story.Id = Guid.NewGuid().ToString();
@@ -35,16 +35,16 @@ namespace Api.Services
             return stories;
         }
 
-        public async Task<Story?> GetStoryAsync(string storyTitle)
+        public async Task<Story?> GetStoryAsync(string storyId)
         {
-            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), storyTitle);
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), storyId);
             return storyFound;
         }
 
 
         public async Task<EditResult> EditStoryAsync(Story story)
         {
-            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
             if(storyFound != null)
             {
                 storyFound.Title = story.Title;
