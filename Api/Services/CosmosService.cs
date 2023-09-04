@@ -31,27 +31,27 @@ namespace Api.Services
             return await container.ReplaceItemAsync(item, id);
         }
 
-        public async Task<T?> FindItemAsync<T>(string propertyName, string value)
+        public async Task<T?> FindItemAsync<T>(string propertyName, string? value)
         {
             var container = _database.GetContainer(_containerNames[typeof(T).Name]);
-            var queryString = $"SELECT * FROM {_containerNames[typeof(T).Name]} p WHERE p.{propertyName} = '{value}'".ToLower();
-            using var filteredFeed = container.GetItemQueryIterator<T>(queryDefinition: new QueryDefinition(query: queryString));
-            var items = await filteredFeed.ReadNextAsync();
+            var queryText = $"SELECT * FROM {_containerNames[typeof(T).Name]} p WHERE p.{propertyName} = '{value}'".ToLower();
+            using var feedIterator = container.GetItemQueryIterator<T>(queryText);
+            var items = await feedIterator.ReadNextAsync();
             return items.FirstOrDefault();
         }
 
         public async Task<List<T>> GetItemsAsync<T>()
         {
-            var items = new List<T>();
             var container = _database.GetContainer(_containerNames[typeof(T).Name]);
-            using FeedIterator<T> feed = container.GetItemQueryIterator<T>(
-                 queryText: $"SELECT * FROM  {_containerNames[typeof(T).Name]}"
-                 );
-            while (feed.HasMoreResults)
-            {
-                FeedResponse<T> response = await feed.ReadNextAsync();
+            var queryText = $"SELECT * FROM  {_containerNames[typeof(T).Name]}";
+            using var feedIterator = container.GetItemQueryIterator<T>(queryText);
+            var items = new List<T>();
 
-                foreach (T item in response)
+            while (feedIterator.HasMoreResults)
+            {
+                var feedResponse = await feedIterator.ReadNextAsync();
+
+                foreach (T item in feedResponse)
                 {
                     items.Add(item);
                 }
@@ -59,5 +59,14 @@ namespace Api.Services
 
             return items;
         }
+
+        public async Task<ItemResponse<T>> DeleteItemAsync<T>(string itemId, string partitionKey)
+        {
+            var container = _database.GetContainer(_containerNames[typeof(T).Name]);
+            var response = await container.DeleteItemAsync<T>(itemId, new PartitionKey(partitionKey));
+            return response;
+        }
     }
+
+
 }

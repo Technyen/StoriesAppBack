@@ -18,7 +18,7 @@ namespace Api.Controllers
 
 
 
-        public StoriesController(ILogger<StoriesController> logger, StoryService storyService,IMapper mapper )
+        public StoriesController(ILogger<StoriesController> logger, StoryService storyService, IMapper mapper)
         {
             _logger = logger;
             _storyService = storyService;
@@ -28,13 +28,14 @@ namespace Api.Controllers
 
 
         [HttpPost("Create")]
-        public async Task<ActionResult> Create(CreateStoryModel createStoryModel)
+        public async Task<ActionResult> CreateAsync(CreateStoryModel createStoryModel)
         {
-            var story =_mapper.Map<Story>(createStoryModel);
-            var result = await _storyService.CreateStory(story);
+            
+            var story = _mapper.Map<Story>(createStoryModel);
+            var result = await _storyService.CreateStoryAsync(story);
             if (result == CreateResult.Success)
             {
-                return Ok();
+                return Ok(story.Id) ;
             }
             else
             {
@@ -47,7 +48,7 @@ namespace Api.Controllers
         {
             try
             {
-                var result = await _storyService.GetStories();
+                var result = await _storyService.GetStoriesAsync();
                 return result;
             }
             catch (Exception ex)
@@ -56,12 +57,12 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("{byTitle}")]
-        public async Task<ActionResult<Story>> GetStory(string byTitle )
+        [HttpGet("{Title}")]
+        public async Task<ActionResult<Story>> GetStoryAsync(string title)
         {
             try
             {
-                var result = await _storyService.GetStory(byTitle);
+                var result = await _storyService.GetStoryAsync(title);
                 return result;
             }
             catch (Exception ex)
@@ -72,10 +73,10 @@ namespace Api.Controllers
 
 
         [HttpPut("EditStory")]
-        public async Task<ActionResult> EditStory(EditStoryModel editStoryModel)
+        public async Task<ActionResult> EditStoryAsync(EditStoryModel editStoryModel)
         {
             var story = _mapper.Map<Story>(editStoryModel);
-            var result = await _storyService.EditStory(story);
+            var result = await _storyService.EditStoryAsync(story);
             if (result == EditResult.Success)
             {
                 return Ok();
@@ -83,6 +84,29 @@ namespace Api.Controllers
             else
             {
                 return NotFound();
+            }
+        }
+
+        [HttpDelete("{StoryId}")]
+        public async Task<ActionResult> DeleteStoryAsync(string storyId)
+        {
+            try
+            {
+                var response = await _storyService.DeleteStoryAsync(storyId);
+                if (response== DeleteResult.Success)
+                {
+                    return Ok();
+
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+
+               return BadRequest(ex.Message);
             }
         }
 

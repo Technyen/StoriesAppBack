@@ -1,5 +1,7 @@
 ﻿using Api.Entities;
 using Api.Enums;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Azure.Cosmos;
 
 namespace Api.Services
 {
@@ -12,7 +14,7 @@ namespace Api.Services
             _cosmosService = cosmosService;
         }
 
-        public async Task<CreateResult> CreateStory(Story story)
+        public async Task<CreateResult> CreateStoryAsync(Story story)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
             if (storyFound == null)
@@ -27,20 +29,20 @@ namespace Api.Services
             }
         }
 
-        public async Task<List<Story>> GetStories()
+        public async Task<List<Story>> GetStoriesAsync()
         {
             var stories = await _cosmosService.GetItemsAsync<Story>();
             return stories;
         }
 
-        public async Task<Story?> GetStory(string storyTitle)
+        public async Task<Story?> GetStoryAsync(string storyTitle)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), storyTitle);
             return storyFound;
         }
 
 
-        public async Task<EditResult> EditStory(Story story)
+        public async Task<EditResult> EditStoryAsync(Story story)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
             if(storyFound != null)
@@ -57,5 +59,19 @@ namespace Api.Services
                 return EditResult.NotFound;
             }
         }
+
+        public async Task<DeleteResult> DeleteStoryAsync(string storyId)
+        {
+            var response = await _cosmosService.DeleteItemAsync<Story>(storyId , nameof(Story));
+            if(response != null)
+            {
+                return DeleteResult.Success;
+            }
+            else
+            {
+                return DeleteResult.NotFound;
+            }
+        }
+
     }
 }
