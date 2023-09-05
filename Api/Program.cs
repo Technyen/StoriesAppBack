@@ -26,8 +26,10 @@ namespace Api
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins(frontEndUrl)
-                                      .AllowAnyHeader();
+                                      policy
+                                      .WithOrigins(frontEndUrl)
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
                                   });
             });
 

@@ -18,11 +18,10 @@ namespace ApiTest
             StoryService storyService = new(_cosmosServiceMock.Object);
             
             // Act
-            var result =await storyService.GetStories();
+            var result =await storyService.GetStoriesAsync();
 
             // Assert
             Assert.Equal(stories, result);
-            //_cosmosServiceMock.Verify(x => x.GetItemsAsync<Story>(It.IsAny<Story>()),Times.Once());
         }
 
         [Fact]
@@ -34,7 +33,7 @@ namespace ApiTest
             StoryService storyService = new(_cosmosServiceMock.Object);
 
             // Act
-            var result = await storyService.CreateStory(story);
+            var result = await storyService.CreateStoryAsync(story);
 
             // Assert
             Assert.Equal(CreateResult.Duplicate, result);    
@@ -50,7 +49,7 @@ namespace ApiTest
             StoryService storyService = new(_cosmosServiceMock.Object);
 
             // Act
-            var result = await storyService.CreateStory(story);
+            var result = await storyService.CreateStoryAsync(story);
            
 
             // Assert

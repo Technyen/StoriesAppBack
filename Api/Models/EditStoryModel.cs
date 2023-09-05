@@ -1,10 +1,7 @@
-﻿
-
-namespace Api.Entities
+﻿namespace Api.Models
 {
-    public class Story 
+    public class EditStoryModel
     {
-        public string Type = nameof(Story);
         public string? Id { get; set; }
         public string? Title { get; set; }
         public string? Category { get; set; }
