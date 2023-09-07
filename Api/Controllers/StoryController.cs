@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Api.Services;
-using Api.Controllers;
 using Api.Enums;
 using Api.Entities;
 
@@ -28,19 +27,27 @@ namespace Api.Controllers
 
 
         [HttpPost("create")]
-        public async Task<ActionResult> CreateAsync(CreateStoryModel createStoryModel)
+        public async Task<ActionResult> CreateAsync( [FromForm] CreateStoryModel createStoryModel, IFormFile formFile)
         {
-            
-            var story = _mapper.Map<Story>(createStoryModel);
-            var result = await _storyService.CreateStoryAsync(story);
-            if (result == CreateResult.Success)
+            try
             {
-                return Ok(story.Id) ;
+                var story = _mapper.Map<Story>(createStoryModel);
+                var result = await _storyService.CreateStoryAsync(story, formFile);
+                if (result == CreateResult.Success)
+                {
+                    return Ok(story.Id);
+                }
+                else
+                {
+                    return Conflict();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Conflict();
+
+                return Problem(ex.Message);
             }
+           
         }
 
         [HttpGet("getAll")]
@@ -75,16 +82,25 @@ namespace Api.Controllers
         [HttpPut("editStory")]
         public async Task<ActionResult> EditStoryAsync(EditStoryModel editStoryModel)
         {
-            var story = _mapper.Map<Story>(editStoryModel);
-            var result = await _storyService.EditStoryAsync(story);
-            if (result == EditResult.Success)
+            try
             {
-                return Ok();
+                var story = _mapper.Map<Story>(editStoryModel);
+                var result = await _storyService.EditStoryAsync(story);
+                if (result == EditResult.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return NotFound();
+
+                return Problem(ex.Message);
             }
+            
         }
 
         [HttpDelete("{storyId}")]

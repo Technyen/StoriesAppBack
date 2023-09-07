@@ -1,26 +1,30 @@
 ﻿using Api.Entities;
 using Api.Enums;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Azure.Cosmos;
+using Api.Models;
+using Azure.Storage.Blobs;
 
 namespace Api.Services
 {
     public class StoryService
     {
         private readonly ICosmosService _cosmosService;
+        private readonly IStorageService _blobStorageService;
 
-        public StoryService(ICosmosService cosmosService)
+        public StoryService(ICosmosService cosmosService, IStorageService blobStorageService )
         {
             _cosmosService = cosmosService;
+            _blobStorageService = blobStorageService;
         }
 
-        public async Task<CreateResult> CreateStoryAsync(Story story)
+        public async Task<CreateResult> CreateStoryAsync(Story story, IFormFile formFile)
         {
-            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
+            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
             if (storyFound == null)
             {
                 story.Id = Guid.NewGuid().ToString();
                 await _cosmosService.CreateItemAsync(story);
+                await _blobStorageService.UploadAsync(formFile.FileName, formFile.OpenReadStream() );
+
                 return CreateResult.Success;
             }
             else
