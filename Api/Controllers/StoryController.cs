@@ -104,11 +104,11 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{storyId}")]
-        public async Task<ActionResult> DeleteStoryAsync(string storyId)
+        public async Task<ActionResult> DeleteStoryAsync(string storyId, string blobFile)
         {
             try
             {
-                var response = await _storyService.DeleteStoryAsync(storyId);
+                var response = await _storyService.DeleteStoryAsync(storyId,blobFile );
                 if (response== DeleteResult.Success)
                 {
                     return Ok();

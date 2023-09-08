@@ -42,6 +42,7 @@ namespace Api.Services
         public async Task<Story?> GetStoryAsync(string storyId)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), storyId);
+            await _blobStorageService.GetBlobAsync();
             return storyFound;
         }
 
@@ -64,9 +65,10 @@ namespace Api.Services
             }
         }
 
-        public async Task<DeleteResult> DeleteStoryAsync(string storyId)
+        public async Task<DeleteResult> DeleteStoryAsync(string storyId, string blobFile)
         {
             var response = await _cosmosService.DeleteItemAsync<Story>(storyId , nameof(Story));
+                           await _blobStorageService.DeleteAsync(blobFile);
             if(response != null)
             {
                 return DeleteResult.Success;

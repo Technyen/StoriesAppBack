@@ -1,6 +1,6 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
 
 namespace Api.Services
 {
@@ -18,7 +18,23 @@ namespace Api.Services
             var container = _blobServiceClient.GetBlobContainerClient("images");
 			await container.UploadBlobAsync(fileName, file);
         }
-		
 
-	}
+        public async Task GetBlobAsync()
+        {
+            var container = _blobServiceClient.GetBlobContainerClient("images");
+            await foreach (BlobItem blobItem in container.GetBlobsAsync())
+            {
+                Console.WriteLine("\t" + blobItem.Name);
+            }   
+        }
+		
+		public async Task DeleteAsync(string blobName)
+		{
+            var container = _blobServiceClient.GetBlobContainerClient("images");
+            await container.DeleteBlobAsync(blobName);
+            
+
+        }
+
+    }
 }

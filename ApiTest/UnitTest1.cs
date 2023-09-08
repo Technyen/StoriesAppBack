@@ -37,7 +37,7 @@ namespace ApiTest
             StoryService storyService = new(_cosmosServiceMock.Object, _storageServiceMock.Object);
 
             // Act
-            var result = await storyService.CreateStoryAsync(story, fileMock.Object);
+            var result = await storyService.CreateStoryAsync(story, (IFormFile)fileMock.Object);
 
             // Assert
             Assert.Equal(CreateResult.Duplicate, result);    
@@ -55,7 +55,7 @@ namespace ApiTest
             StoryService storyService = new(_cosmosServiceMock.Object, _storageServiceMock.Object);
 
             // Act
-            var result = await storyService.CreateStoryAsync(story, file.Object);
+            var result = await storyService.CreateStoryAsync(story, (IFormFile)file.Object);
            
 
             // Assert
