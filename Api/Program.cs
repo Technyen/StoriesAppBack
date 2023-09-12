@@ -1,7 +1,5 @@
 using Api.Services;
 using Azure.Identity;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Azure;
 
@@ -38,7 +36,11 @@ namespace Api
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                }); ;
 
             builder.Services.AddSingleton((s) =>
             {

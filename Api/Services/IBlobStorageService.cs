@@ -1,4 +1,5 @@
 ﻿using Api.Models;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Azure;
 namespace Api.Services
 {
@@ -6,7 +7,7 @@ namespace Api.Services
     {
         Task UploadAsync(string fileName, Stream file);
         Task DeleteAsync(string blobName);
-        Task GetBlobAsync();
+       Task<BlobItem?> GetBlobAsync(string blobName);
 
 
     }

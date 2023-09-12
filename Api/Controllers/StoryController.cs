@@ -27,12 +27,12 @@ namespace Api.Controllers
 
 
         [HttpPost("create")]
-        public async Task<ActionResult> CreateAsync( [FromForm] CreateStoryModel createStoryModel, IFormFile formFile)
+        public async Task<ActionResult> CreateAsync([FromForm]CreateStoryModel createStoryModel)
         {
             try
             {
                 var story = _mapper.Map<Story>(createStoryModel);
-                var result = await _storyService.CreateStoryAsync(story, formFile);
+                var result = await _storyService.CreateStoryAsync(story, createStoryModel.FormFile);
                 if (result == CreateResult.Success)
                 {
                     return Ok(story.Id);
@@ -80,12 +80,12 @@ namespace Api.Controllers
 
 
         [HttpPut("editStory")]
-        public async Task<ActionResult> EditStoryAsync(EditStoryModel editStoryModel)
+        public async Task<ActionResult> EditStoryAsync([FromForm]EditStoryModel editStoryModel)
         {
             try
             {
                 var story = _mapper.Map<Story>(editStoryModel);
-                var result = await _storyService.EditStoryAsync(story);
+                var result = await _storyService.EditStoryAsync(story, editStoryModel.FormFile);
                 if (result == EditResult.Success)
                 {
                     return Ok();
@@ -104,11 +104,12 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{storyId}")]
-        public async Task<ActionResult> DeleteStoryAsync(string storyId, string blobFile)
+        public async Task<ActionResult> DeleteStoryAsync(string storyId)
         {
             try
             {
-                var response = await _storyService.DeleteStoryAsync(storyId,blobFile );
+                var response = await _storyService.DeleteStoryAsync(storyId);
+                               
                 if (response== DeleteResult.Success)
                 {
                     return Ok();

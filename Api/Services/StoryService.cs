@@ -2,6 +2,7 @@
 using Api.Enums;
 using Api.Models;
 using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Services
 {
@@ -21,9 +22,10 @@ namespace Api.Services
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Title), story.Title);
             if (storyFound == null)
             {
-                story.Id = Guid.NewGuid().ToString();
+                story.Id = Guid.NewGuid().ToString() ;
                 await _cosmosService.CreateItemAsync(story);
-                await _blobStorageService.UploadAsync(formFile.FileName, formFile.OpenReadStream() );
+                string blobName = story.Id + "." + formFile.ContentType.Split("/").Last();
+                await _blobStorageService.UploadAsync(blobName , formFile.OpenReadStream() );
 
                 return CreateResult.Success;
             }
@@ -42,14 +44,15 @@ namespace Api.Services
         public async Task<Story?> GetStoryAsync(string storyId)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), storyId);
-            await _blobStorageService.GetBlobAsync();
             return storyFound;
         }
 
 
-        public async Task<EditResult> EditStoryAsync(Story story)
+        public async Task<EditResult> EditStoryAsync(Story story, IFormFile formFile)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
+            await _blobStorageService.DeleteAsync(story.Id);
+            await _blobStorageService.UploadAsync(story.Id, formFile.OpenReadStream());
             if(storyFound != null)
             {
                 storyFound.Title = story.Title;
@@ -65,11 +68,13 @@ namespace Api.Services
             }
         }
 
-        public async Task<DeleteResult> DeleteStoryAsync(string storyId, string blobFile)
+        public async Task<DeleteResult> DeleteStoryAsync(string storyId)
         {
+            var blobItem = await _blobStorageService.GetBlobAsync(storyId);
+            await _blobStorageService.DeleteAsync(blobItem.Name);
             var response = await _cosmosService.DeleteItemAsync<Story>(storyId , nameof(Story));
-                           await _blobStorageService.DeleteAsync(blobFile);
-            if(response != null)
+           
+            if (response != null)
             {
                 return DeleteResult.Success;
             }
