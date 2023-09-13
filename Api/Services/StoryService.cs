@@ -1,8 +1,6 @@
 ﻿using Api.Entities;
 using Api.Enums;
-using Api.Models;
-using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 
 namespace Api.Services
 {
@@ -50,11 +48,15 @@ namespace Api.Services
 
         public async Task<EditResult> EditStoryAsync(Story story, IFormFile formFile)
         {
-            var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
-            await _blobStorageService.DeleteAsync(story.Id);
-            await _blobStorageService.UploadAsync(story.Id, formFile.OpenReadStream());
-            if(storyFound != null)
+                var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
+
+            if (storyFound != null)
             {
+                if (formFile != null)
+                {
+                    await _blobStorageService.DeleteAsync(formFile.Name);
+                    await _blobStorageService.UploadAsync(story.Id, formFile.OpenReadStream());
+                }
                 storyFound.Title = story.Title;
                 storyFound.Category = story.Category;
                 storyFound.AgeSuggested = story.AgeSuggested; 
