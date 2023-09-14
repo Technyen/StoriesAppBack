@@ -1,9 +1,9 @@
-﻿using Api.Models;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using Api.Services;
+﻿using Api.Entities;
 using Api.Enums;
-using Api.Entities;
+using Api.Models;
+using Api.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
@@ -77,7 +77,6 @@ namespace Api.Controllers
                 return Problem(ex.Message);
             }
         }
-
 
         [HttpPut("editStory")]
         public async Task<ActionResult> EditStoryAsync([FromForm]EditStoryModel editStoryModel)

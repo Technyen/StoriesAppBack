@@ -1,14 +1,10 @@
-﻿using Api.Models;
-using Azure.Storage.Blobs.Models;
-using Microsoft.Extensions.Azure;
+﻿using Azure.Storage.Blobs.Models;
 namespace Api.Services
 {
     public interface IStorageService
     {
-        Task UploadAsync(string fileName, Stream file);
-        Task DeleteAsync(string blobName);
-       Task<BlobItem?> GetBlobAsync(string blobName);
-
-
+        Task<string> UploadAsync(string blobName, Stream file, string containerName);
+        Task<BlobItem?> GetBlobAsync(string blobName, string containerName);
+        Task DeleteAsync(string blobName, string containerName);
     }
 }
