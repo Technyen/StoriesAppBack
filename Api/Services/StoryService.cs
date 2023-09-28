@@ -5,11 +5,11 @@ namespace Api.Services
 {
     public class StoryService
     {
-        private readonly ICosmosService _cosmosService;
+        private readonly IRepositoryService _cosmosService;
         private readonly IStorageService _blobStorageService;
         private readonly string _imageContainerName;
 
-        public StoryService(ICosmosService cosmosService, IStorageService blobStorageService)
+        public StoryService(IRepositoryService cosmosService, IStorageService blobStorageService)
         {
             _cosmosService = cosmosService;
             _blobStorageService = blobStorageService;

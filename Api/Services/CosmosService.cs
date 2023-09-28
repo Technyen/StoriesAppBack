@@ -4,7 +4,7 @@ using User = Api.Entities.User;
 
 namespace Api.Services
 {
-    public class CosmosService : ICosmosService
+    public class CosmosService : IRepositoryService
     {
         private readonly CosmosClient _client;
         private readonly Database _database;

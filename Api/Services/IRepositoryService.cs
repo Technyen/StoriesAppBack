@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Azure.Cosmos;
-using Api.Entities;
+﻿using Microsoft.Azure.Cosmos;
 
 
 namespace Api.Services
 
 {
-    public interface ICosmosService
+    public interface IRepositoryService
     {
         Task<T> CreateItemAsync<T>(T item);
         Task<T?> FindItemAsync<T>(string propertyName, string? value);

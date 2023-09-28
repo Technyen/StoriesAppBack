@@ -5,9 +5,9 @@ namespace Api.Services
 {
     public class UserService
     {
-        private readonly ICosmosService _serviceCosmos;
+        private readonly IRepositoryService _serviceCosmos;
 
-        public UserService(ICosmosService serviceCosmos)
+        public UserService(IRepositoryService serviceCosmos)
         {
             _serviceCosmos = serviceCosmos;
         }

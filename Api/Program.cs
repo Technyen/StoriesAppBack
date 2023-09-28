@@ -45,7 +45,7 @@ namespace Api
             builder.Services.AddSingleton((s) =>
             {
                 return new CosmosClient(
-                    accountEndpoint: "https://testingelias.documents.azure.com:443/",
+                    accountEndpoint: "https://storiesapi.documents.azure.com:443/",
                     tokenCredential: new DefaultAzureCredential(),
                     clientOptions: new CosmosClientOptions
                     {
@@ -64,13 +64,13 @@ namespace Api
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<StoryService>();
-            builder.Services.AddScoped<ICosmosService, CosmosService>();
+            builder.Services.AddScoped<IRepositoryService, CosmosService>();
             builder.Services.AddScoped<IStorageService, StorageService>();
 
             //BlobStorage
             builder.Services.AddAzureClients(clientBuilder =>
             {
-                clientBuilder.AddBlobServiceClient(new Uri("https://testingeliasstorage.blob.core.windows.net"));
+                clientBuilder.AddBlobServiceClient(new Uri("https://storiesstorageblob.blob.core.windows.net/"));
                 clientBuilder.UseCredential(new DefaultAzureCredential());
 
                
