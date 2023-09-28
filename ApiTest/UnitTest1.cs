@@ -30,7 +30,7 @@ namespace ApiTest
         public async void CreateStoryAsyncWithExistentStoryErrorsDuplicate()
         {
             // Arrange
-            Mock<Stream> fileMock = new Mock<Stream>();
+            Mock<IFormFile> fileMock = new Mock<IFormFile>();
             var story = new Story();
             _cosmosServiceMock.Setup(x => x.FindItemAsync<Story>(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(story);
             _storageServiceMock.Setup(x => x.UploadAsync(It.IsAny<string>(), It.IsAny<Stream>(),"images"));
@@ -48,14 +48,15 @@ namespace ApiTest
         public async void CreateStoryAsyncWithNonExistentStorySucceeds()
         {
             // Arrange
-            var file = new Mock<Stream>();
+            var fileMock = new Mock<IFormFile>();
             var story = new Story();
+            fileMock.Setup(x => x.ContentType).Returns("application/jpg");
             _cosmosServiceMock.Setup(x => x.FindItemAsync<Story>(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(default(Story));
             _storageServiceMock.Setup(x => x.UploadAsync(It.IsAny<string>(), It.IsAny<Stream>(), "images"));
             StoryService storyService = new(_cosmosServiceMock.Object, _storageServiceMock.Object);
 
             // Act
-            var result = await storyService.CreateStoryAsync(story, (IFormFile)file.Object);
+            var result = await storyService.CreateStoryAsync(story, (IFormFile)fileMock.Object);
            
 
             // Assert
