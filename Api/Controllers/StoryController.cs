@@ -80,19 +80,26 @@ namespace Api.Controllers
         }
 
         [HttpPut("editStory")]
-        public async Task<ActionResult> EditStoryAsync([FromForm] EditStoryModel editStoryModel)
+        public async Task<ActionResult?> EditStoryAsync([FromForm] EditStoryModel editStoryModel)
         {
             try
             {
                 var story = _mapper.Map<Story>(editStoryModel);
-                var result = await _storyService.EditStoryAsync(story, editStoryModel.FormFile);
-                if (result == EditResult.Success)
+                if (editStoryModel.FormFile != null)
                 {
-                    return Ok();
+                    var result = await _storyService.EditStoryAsync(story, editStoryModel.FormFile);
+                    if (result == EditResult.Success)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
-                else
+                else 
                 {
-                    return NotFound();
+                    return null;
                 }
             }
             catch (Exception ex)
