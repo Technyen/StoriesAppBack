@@ -1,8 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 
-
 namespace Api.Services
-
 {
     public interface IRepositoryService
     {

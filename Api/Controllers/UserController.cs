@@ -15,17 +15,12 @@ namespace Api.Controllers
         private readonly ILogger<UsersController> _logger;
         private readonly UserService _serviceUsers;
         private readonly IMapper _mapper;
-
-
         public UsersController( ILogger<UsersController> logger, UserService serviceUser, IMapper mapper)
         {
             _logger = logger;
             _serviceUsers = serviceUser;
             _mapper = mapper;
-            
         }
-
-
 
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterUserModel registerUserModel)
@@ -42,7 +37,6 @@ namespace Api.Controllers
                 return Conflict();
             }
         }
-
 
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginUserModel loginUserModel)
@@ -62,7 +56,5 @@ namespace Api.Controllers
                 return Unauthorized();    
             }
         }
-
-
     }
 }

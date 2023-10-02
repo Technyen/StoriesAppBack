@@ -14,9 +14,6 @@ namespace Api.Controllers
         private readonly ILogger<StoriesController> _logger;
         private readonly StoryService _storyService;
         private readonly IMapper _mapper;
-
-
-
         public StoriesController(ILogger<StoriesController> logger, StoryService storyService, IMapper mapper)
         {
             _logger = logger;
@@ -24,10 +21,8 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-
-
         [HttpPost("create")]
-        public async Task<ActionResult> CreateAsync([FromForm]CreateStoryModel createStoryModel)
+        public async Task<ActionResult> CreateAsync([FromForm] CreateStoryModel createStoryModel)
         {
             try
             {
@@ -47,7 +42,6 @@ namespace Api.Controllers
 
                 return Problem(ex.Message);
             }
-           
         }
 
         [HttpGet("getAll")]
@@ -65,12 +59,19 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Story>> GetStoryAsync(string id)
+        public async Task<ActionResult<Story>?> GetStoryAsync(string id)
         {
             try
             {
                 var result = await _storyService.GetStoryAsync(id);
-                return result;
+                if (result != null) 
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -79,7 +80,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("editStory")]
-        public async Task<ActionResult> EditStoryAsync([FromForm]EditStoryModel editStoryModel)
+        public async Task<ActionResult> EditStoryAsync([FromForm] EditStoryModel editStoryModel)
         {
             try
             {
@@ -99,7 +100,6 @@ namespace Api.Controllers
 
                 return Problem(ex.Message);
             }
-            
         }
 
         [HttpDelete("{storyId}")]
@@ -108,11 +108,10 @@ namespace Api.Controllers
             try
             {
                 var response = await _storyService.DeleteStoryAsync(storyId);
-                               
-                if (response== DeleteResult.Success)
+
+                if (response == DeleteResult.Success)
                 {
                     return Ok();
-
                 }
                 else
                 {
@@ -121,11 +120,8 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
-
-               return BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

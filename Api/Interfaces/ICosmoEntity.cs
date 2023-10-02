@@ -2,8 +2,8 @@
 {
     public class ICosmoEntity
     {
-        public string? Type { get; set; }
-        public string? Id { get; set; }
+        public string Type { get; set; } = null!;
+        public string Id { get; set; } = null!;
     }
     
 }

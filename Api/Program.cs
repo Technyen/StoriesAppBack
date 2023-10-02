@@ -10,7 +10,6 @@ namespace Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            //CORS configuration
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             string frontEndUrl;
             if (builder.Environment.IsDevelopment())
@@ -34,8 +33,6 @@ namespace Api
                                   });
             });
 
-            // Add services to the container.
-
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -56,10 +53,8 @@ namespace Api
                     });
             });
 
-            //AutomappDI
             builder.Services.AddAutoMapper(typeof(Program));
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<UserService>();
@@ -67,15 +62,14 @@ namespace Api
             builder.Services.AddScoped<IRepositoryService, CosmosService>();
             builder.Services.AddScoped<IStorageService, StorageService>();
 
-            //BlobStorage
             builder.Services.AddAzureClients(clientBuilder =>
             {
                 clientBuilder.AddBlobServiceClient(new Uri("https://storiesstorageblob.blob.core.windows.net/"));
                 clientBuilder.UseCredential(new DefaultAzureCredential());
 
-               
+
             });
-           
+
             var app = builder.Build();
 
             app.UseSwagger();
@@ -91,10 +85,6 @@ namespace Api
             app.MapControllers();
 
             app.Run();
-
-  
-
         }
-
     }
 }

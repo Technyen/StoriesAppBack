@@ -56,17 +56,14 @@ namespace Api.Services
                     items.Add(item);
                 }
             }
-
             return items;
         }
 
-        public async Task<ItemResponse<T>> DeleteItemAsync<T>(string itemId, string partitionKey)
+        public async Task<ItemResponse<T>> DeleteItemAsync<T>(string? itemId, string partitionKey)
         {
             var container = _database.GetContainer(_containerNames[typeof(T).Name]);
             var response = await container.DeleteItemAsync<T>(itemId, new PartitionKey(partitionKey));
             return response;
         }
     }
-
-
 }

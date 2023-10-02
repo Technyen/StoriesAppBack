@@ -46,7 +46,6 @@ namespace Api.Services
             return storyFound;
         }
 
-
         public async Task<EditResult> EditStoryAsync(Story story, IFormFile formFile)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
@@ -72,18 +71,22 @@ namespace Api.Services
         public async Task<DeleteResult> DeleteStoryAsync(string storyId)
         {
             var blobItem = await _blobStorageService.GetBlobAsync(storyId, _imageContainerName);
-            await _blobStorageService.DeleteAsync(blobItem.Name, _imageContainerName);
-            var response = await _cosmosService.DeleteItemAsync<Story>(storyId, nameof(Story));
-
-            if (response != null)
-            {
-                return DeleteResult.Success;
-            }
-            else
+            if (blobItem == null)
             {
                 return DeleteResult.NotFound;
             }
+            else {
+                await _blobStorageService.DeleteAsync(blobItem.Name, _imageContainerName);
+                var response = await _cosmosService.DeleteItemAsync<Story>(storyId, nameof(Story));
+                if (response != null)
+                {
+                    return DeleteResult.Success;
+                }
+                else
+                {
+                    return DeleteResult.NotFound;
+                }
+            }
         }
-
     }
 }

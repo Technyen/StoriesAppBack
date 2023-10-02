@@ -6,7 +6,7 @@ namespace Api.Profiles
 {
     public class StoryProfile : Profile
     {
-        public StoryProfile() 
+        public StoryProfile()
         {
             CreateMap<CreateStoryModel, Story>();
             CreateMap<EditStoryModel, Story>();
