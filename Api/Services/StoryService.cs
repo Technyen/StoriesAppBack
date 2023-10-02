@@ -46,7 +46,7 @@ namespace Api.Services
             return storyFound;
         }
 
-        public async Task<EditResult> EditStoryAsync(Story story, IFormFile formFile)
+        public async Task<EditResult> EditStoryAsync(Story story, IFormFile? formFile)
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
 
