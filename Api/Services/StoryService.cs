@@ -50,7 +50,11 @@ namespace Api.Services
         {
             var storyFound = await _cosmosService.FindItemAsync<Story>(nameof(Story.Id), story.Id);
 
-            if (storyFound != null)
+            if (storyFound == null)
+            {
+                return EditResult.NotFound;
+            }
+            else
             {
                 if (formFile != null)
                 {
@@ -61,10 +65,7 @@ namespace Api.Services
                 }
                 await _cosmosService.UpdateItemAsync(story, story.Id);
                 return EditResult.Success;
-            }
-            else
-            {
-                return EditResult.NotFound;
+
             }
         }
 
