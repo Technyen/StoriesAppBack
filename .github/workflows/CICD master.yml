@@ -1,9 +1,7 @@
-
 on:
   push:
     branches:
       - master
-
 
 permissions:
       id-token: write
@@ -18,9 +16,7 @@ jobs:
   build:
     if: github.ref == 'refs/heads/master' 
     runs-on: ubuntu-latest
-
     steps:
-
       # Checkout the repo
       - uses: actions/checkout@main
       - uses: azure/login@v1
@@ -29,7 +25,6 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       
-
       # Setup .NET Core SDK
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
@@ -42,16 +37,14 @@ jobs:
           dotnet restore
           dotnet build --configuration Release
           dotnet test
-          dotnet publish -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api' 
+          dotnet publish --configuration Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}' 
       
       # Deploy to Azure Web apps
-      
       - name: 'Run Azure webapp deploy action using publish profile credentials'
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api'
-      
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       - name: logout
         run: |
           az logout

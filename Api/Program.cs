@@ -27,7 +27,7 @@ namespace Api
                                   policy =>
                                   {
                                       policy
-                                      .WithOrigins(frontEndUrl)
+                                      .WithOrigins("http://localhost:3000", "https://storiesapp202307.netlify.app")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
                                   });
