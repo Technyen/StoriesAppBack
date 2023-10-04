@@ -1,10 +1,9 @@
-﻿using Api.Models;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using Api.Services;
-using Api.Controllers;
+﻿using Api.Entities;
 using Api.Enums;
-using Api.Entities;
+using Api.Models;
+using Api.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
@@ -15,9 +14,6 @@ namespace Api.Controllers
         private readonly ILogger<StoriesController> _logger;
         private readonly StoryService _storyService;
         private readonly IMapper _mapper;
-
-
-
         public StoriesController(ILogger<StoriesController> logger, StoryService storyService, IMapper mapper)
         {
             _logger = logger;
@@ -25,21 +21,26 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-
-
         [HttpPost("create")]
-        public async Task<ActionResult> CreateAsync(CreateStoryModel createStoryModel)
+        public async Task<ActionResult> CreateAsync([FromForm] CreateStoryModel createStoryModel)
         {
-            
-            var story = _mapper.Map<Story>(createStoryModel);
-            var result = await _storyService.CreateStoryAsync(story);
-            if (result == CreateResult.Success)
+            try
             {
-                return Ok(story.Id) ;
+                var story = _mapper.Map<Story>(createStoryModel);
+                var result = await _storyService.CreateStoryAsync(story, createStoryModel.FormFile);
+                if (result == CreateResult.Success)
+                {
+                    return Ok(story.Id);
+                }
+                else
+                {
+                    return Conflict();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Conflict();
+
+                return Problem(ex.Message);
             }
         }
 
@@ -58,12 +59,19 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Story>> GetStoryAsync(string id)
+        public async Task<ActionResult<Story>?> GetStoryAsync(string id)
         {
             try
             {
                 var result = await _storyService.GetStoryAsync(id);
-                return result;
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -71,32 +79,17 @@ namespace Api.Controllers
             }
         }
 
-
         [HttpPut("editStory")]
-        public async Task<ActionResult> EditStoryAsync(EditStoryModel editStoryModel)
-        {
-            var story = _mapper.Map<Story>(editStoryModel);
-            var result = await _storyService.EditStoryAsync(story);
-            if (result == EditResult.Success)
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpDelete("{storyId}")]
-        public async Task<ActionResult> DeleteStoryAsync(string storyId)
+        public async Task<ActionResult> EditStoryAsync([FromForm] EditStoryModel editStoryModel)
         {
             try
             {
-                var response = await _storyService.DeleteStoryAsync(storyId);
-                if (response== DeleteResult.Success)
+                var story = _mapper.Map<Story>(editStoryModel);
+                var result = await _storyService.EditStoryAsync(story, editStoryModel.FormFile);
+              
+                if (result == EditResult.Success)
                 {
                     return Ok();
-
                 }
                 else
                 {
@@ -106,10 +99,30 @@ namespace Api.Controllers
             catch (Exception ex)
             {
 
-               return BadRequest(ex.Message);
+                return Problem(ex.Message);
             }
         }
 
+        [HttpDelete("{storyId}")]
+        public async Task<ActionResult> DeleteStoryAsync(string storyId)
+        {
+            try
+            {
+                var response = await _storyService.DeleteStoryAsync(storyId);
 
+                if (response == DeleteResult.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

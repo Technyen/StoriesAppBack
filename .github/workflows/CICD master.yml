@@ -42,6 +42,7 @@ jobs:
         run: |
           dotnet restore
           dotnet build --configuration Release
+          dotnet test
           dotnet publish -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/ghactions' 
       
       # Deploy to Azure Web apps

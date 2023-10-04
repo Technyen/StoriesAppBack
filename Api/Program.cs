@@ -1,6 +1,7 @@
 using Api.Services;
 using Azure.Identity;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Azure;
 
 namespace Api
 {
@@ -9,7 +10,6 @@ namespace Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            //CORS configuration
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             string frontEndUrl;
             if (builder.Environment.IsDevelopment())
@@ -33,14 +33,16 @@ namespace Api
                                   });
             });
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                }); ;
 
             builder.Services.AddSingleton((s) =>
             {
                 return new CosmosClient(
-                    accountEndpoint: "https://testingelias.documents.azure.com:443/",
+                    accountEndpoint: "https://storiesapi.documents.azure.com:443/",
                     tokenCredential: new DefaultAzureCredential(),
                     clientOptions: new CosmosClientOptions
                     {
@@ -51,15 +53,22 @@ namespace Api
                     });
             });
 
-            //AutomappDI
             builder.Services.AddAutoMapper(typeof(Program));
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<StoryService>();
-            builder.Services.AddScoped<ICosmosService, CosmosService>();
+            builder.Services.AddScoped<IRepositoryService, CosmosService>();
+            builder.Services.AddScoped<IStorageService, StorageService>();
+
+            builder.Services.AddAzureClients(clientBuilder =>
+            {
+                clientBuilder.AddBlobServiceClient(new Uri("https://storiesstorageblob.blob.core.windows.net/"));
+                clientBuilder.UseCredential(new DefaultAzureCredential());
+
+
+            });
 
             var app = builder.Build();
 
