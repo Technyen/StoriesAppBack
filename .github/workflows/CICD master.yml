@@ -8,7 +8,7 @@ permissions:
       contents: read
 
 env:
-  AZURE_WEBAPP_NAME: testingelias23
+  AZURE_WEBAPP_NAME: Apistories20231004
   AZURE_WEBAPP_PACKAGE_PATH: '.' 
   DOTNET_VERSION: '7.0'   
 
@@ -45,7 +45,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api/ghactions'
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/ghactions'
       
       - name: logout
         run: |
