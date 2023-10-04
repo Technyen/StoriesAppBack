@@ -11,7 +11,7 @@ permissions:
       contents: read
 
 env:
-  AZURE_WEBAPP_NAME: Api20230927150307
+  AZURE_WEBAPP_NAME: Apistories20231004
   AZURE_WEBAPP_PACKAGE_PATH: '.' 
   DOTNET_VERSION: '7.0'   
 
