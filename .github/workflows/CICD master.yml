@@ -25,8 +25,8 @@ jobs:
               dotnet build --configuration Release
               dotnet test
               dotnet publish --configuration Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api' 
-              uses: actions/upload-artifact@v2
-              with: 
+          - uses: actions/upload-artifact@v2
+            with: 
                 name: publish-artifact
                 path: path/to/artifact/${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api
                 if-no-files-found: error
