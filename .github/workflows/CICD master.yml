@@ -1,53 +1,44 @@
-name: build
+name: CICD
 on:
   push:
     branches:
       - master
-
-
 permissions:
       id-token: write
       contents: read
-
 env:
   AZURE_WEBAPP_NAME: Apistories20231004
   AZURE_WEBAPP_PACKAGE_PATH: '.' 
   DOTNET_VERSION: '7.0'   
-
 jobs:
     build:
-        if: github.ref == 'refs/heads/master' 
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@main
-          # Setup .NET Core SDK
+          - uses: actions/checkout
           - name: Setup .NET Core
             uses: actions/setup-dotnet@v1
             with:
               dotnet-version: ${{ env.DOTNET_VERSION }} 
-          # Run dotnet build and publish
-          - name: dotnet build and publish
+          - name: Build and publish
             run: |
               dotnet restore
               dotnet build --configuration Release
               dotnet test
-              dotnet publish -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api' 
+              dotnet publish --configuration Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api' 
     deploy:
         runs-on: ubuntu-latest
+        needs: build
         steps:
-         # Checkout the repo
-          - uses: actions/checkout@main
-          - uses: azure/login@v1
+          - name: Az login
+            uses: azure/login@v1
             with:
               client-id: ${{ secrets.AZURE_CLIENT_ID }}
               tenant-id: ${{ secrets.AZURE_TENANT_ID }}
               subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          # Deploy to Azure Web apps
-          - name: 'Run Azure webapp deploy action using publish profile credentials'
+          - name: Deploy
             uses: azure/webapps-deploy@v2
             with: 
               app-name: ${{ env.AZURE_WEBAPP_NAME }}
               package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api'
-          - name: logout
-            run: |
-              az logout
+          - name: Logout
+            run: az logout
