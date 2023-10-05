@@ -28,18 +28,17 @@ jobs:
           - name: Upload artifact
             uses: actions/upload-artifact@v3
             with: 
-                name: publish-artifact
-                path: publish
-                if-no-files-found: error
-
+                name: artifact
+                path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api
     deploy:
         runs-on: ubuntu-latest
         needs: build
         steps:
-          - name: Download artefact
+          - name: Download artifact
             uses: actions/download-artifact@v3
             with: 
-                name: publish-artifact
+                name: artifact
+                path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api
 
           - name: Az login
             uses: azure/login@v1
