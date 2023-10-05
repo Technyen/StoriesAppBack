@@ -25,16 +25,22 @@ jobs:
               dotnet build --configuration Release
               dotnet test
               dotnet publish --configuration Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api' 
-          - uses: actions/upload-artifact@v3
+          - name: Upload artifact
+            uses: actions/upload-artifact@v3
             with: 
                 name: publish-artifact
-                path: path/to/artifact/
+                path: publish
                 if-no-files-found: error
 
     deploy:
         runs-on: ubuntu-latest
         needs: build
         steps:
+          - name: Download artefact
+            uses: actions/download-artifact@v3
+            with: 
+                name: publish-artifact
+
           - name: Az login
             uses: azure/login@v1
             with:
