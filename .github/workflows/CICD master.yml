@@ -28,7 +28,7 @@ jobs:
           - uses: actions/upload-artifact@v2
             with: 
                 name: publish-artifact
-                path: path/to/artifact/${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Api
+                path: path/to/artifact/Api
                 if-no-files-found: error
 
     deploy:
