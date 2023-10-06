@@ -1,8 +1,7 @@
+name: CI
 on:
- pull_request:
-    branches:
-      - '*'
-      - '!master'
+ pull_request_review:
+    types: [submitted, edited]
 env:
   DOTNET_VERSION: '7.0'   
 
