@@ -3,7 +3,7 @@ using Api.Enums;
 using Api.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using Xunit;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ApiTest
 {

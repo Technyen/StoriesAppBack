@@ -4,6 +4,7 @@ using Api.Models;
 using Api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Api.Controllers
 {

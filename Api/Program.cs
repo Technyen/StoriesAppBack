@@ -1,4 +1,7 @@
+using System.Configuration;
+using System.Threading.RateLimiting;
 using Api.Services;
+using AspNetCoreRateLimit;
 using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Azure;
@@ -12,6 +15,7 @@ namespace Api
             var builder = WebApplication.CreateBuilder(args);
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             string frontEndUrl;
+
             if (builder.Environment.IsDevelopment())
             {
                 frontEndUrl = "http://localhost:3000";
@@ -53,6 +57,17 @@ namespace Api
                     });
             });
 
+            builder.Services.AddRateLimiter(options => {
+                options.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<HttpContext, string>(httpContext => RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(), factory: partition => new FixedWindowRateLimiterOptions
+                {
+                    AutoReplenishment = true,
+                    PermitLimit = 5,
+                    QueueLimit = 0,
+                    Window = TimeSpan.FromMinutes(1)
+                }));
+            });
+
             builder.Services.AddAutoMapper(typeof(Program));
 
             builder.Services.AddEndpointsApiExplorer();
@@ -83,6 +98,8 @@ namespace Api
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.UseRateLimiter();
 
             app.Run();
         }
